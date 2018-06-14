@@ -42,6 +42,7 @@ public class UsersServlet extends HttpServlet {
 
         model.put("name", userList.get().get(index).getName());
         model.put("url", userList.get().get(index).getUrl());
+        model.put("id", userList.get().get(index).getId());
         Template template = cfg.getTemplate("usersTemplate.ftlh");
         Writer out = resp.getWriter();
 

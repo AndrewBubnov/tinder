@@ -9,16 +9,12 @@
     </style>
 </head>
 <body>
-
-<#list liked as i>
-<h2>${i.name}, (id = ${i.id})</h2>
-<img src="${i.url}">
+<h3>%s (id = %s)</h3>
+<div><img src = %s></div>
 
 <form action = "liked" method="post">
     <input type="submit" name="chat" value="Chat">
-    <input type="hidden" name="userId" value="${i.id}">
-
+    <input type="hidden" name="userId" value=%s>
 </form>
-</#list>
 </body>
 </html>

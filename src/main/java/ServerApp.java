@@ -5,6 +5,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import servlets.LikedServlet;
+import servlets.MessagesServlet;
 import servlets.UsersServlet;
 
 
@@ -20,6 +21,7 @@ public class ServerApp {
             setHandler(new ServletContextHandler() {{
                            addServlet(new ServletHolder(new UsersServlet(likedSet)) ,"/users");
                            addServlet(new ServletHolder(new LikedServlet(likedSet)) ,"/liked");
+                           addServlet(new ServletHolder(new MessagesServlet()) ,"/messages");
                        }}
             );
             start();
