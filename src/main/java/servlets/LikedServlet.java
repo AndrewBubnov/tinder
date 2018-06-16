@@ -1,6 +1,7 @@
 package servlets;
 
 import dao.Database;
+import dao.LikedDAO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -25,13 +26,13 @@ public class LikedServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-//        cfg.setDirectoryForTemplateLoading(new File("./src/main/java/templates"));
+//        cfg.setDirectoryForTemplateLoading(new File("./src/main/java/resources/static/html/"));
 //        cfg.setDefaultEncoding("UTF-8");
 //        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 //        cfg.setLogTemplateExceptions(false);
 //        cfg.setWrapUncheckedExceptions(true);
 //        Map<String, Object> model = new HashMap<>();
-//        Template template = cfg.getTemplate("likedTemplate.ftlh");
+//        Template template = cfg.getTemplate("people-list.html");
 //        Writer out = resp.getWriter();
 //        model.put("liked", likedSet);
 //
@@ -42,7 +43,9 @@ public class LikedServlet extends HttpServlet {
 //        }
         PrintWriter writer = resp.getWriter();
         String s = printFile("likedTemplate.html");
-        for (User user : likedSet) {
+        LikedDAO likedDAO = new LikedDAO();
+        List<User> likedUsers = likedDAO.getUsers();
+        for (User user : likedUsers) {
         writer.format(Locale.UK, s, user.getName(), user.getId(), user.getUrl(), user.getId());
         }
     }
@@ -50,8 +53,9 @@ public class LikedServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("chat").equals("Chat")){
-            getServletContext().setAttribute("userId", req.getParameter("userId"));
-            resp.sendRedirect("/messages");
+            String userId = req.getParameter("userId");
+            getServletContext().setAttribute("userId", userId);
+            resp.sendRedirect("/messages/" + userId);
         }
     }
 

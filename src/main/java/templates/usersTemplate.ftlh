@@ -19,6 +19,5 @@
         <#--<input type="submit" name="answer" value="Don't like">-->
         <input type="submit" name="direction" value="Next">
 </form>
-
 </body>
 </html>

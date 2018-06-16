@@ -1,12 +1,8 @@
-import dao.DataBaseHashMap;
-import dao.Database;
 import model.User;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import servlets.LikedServlet;
-import servlets.MessagesServlet;
-import servlets.UsersServlet;
+import servlets.*;
 
 
 import java.util.HashSet;
@@ -21,7 +17,9 @@ public class ServerApp {
             setHandler(new ServletContextHandler() {{
                            addServlet(new ServletHolder(new UsersServlet(likedSet)) ,"/users");
                            addServlet(new ServletHolder(new LikedServlet(likedSet)) ,"/liked");
-                           addServlet(new ServletHolder(new MessagesServlet()) ,"/messages");
+                           addServlet(new ServletHolder(new MessagesServlet()) ,"/messages/*");
+                           addServlet(new ServletHolder(new StaticServlet()) ,"/assets/*");
+
                        }}
             );
             start();

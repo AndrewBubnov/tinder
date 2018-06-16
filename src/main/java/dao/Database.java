@@ -1,6 +1,6 @@
 package dao;
 
 public interface Database {
-    void put(String k, String v);
-    String get(String k);
+    void put(String k, Object v);
+    Object get(String k);
 }
