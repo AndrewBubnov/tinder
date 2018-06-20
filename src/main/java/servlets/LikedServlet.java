@@ -44,14 +44,6 @@ public class LikedServlet extends HttpServlet {
         } catch (TemplateException e) {
             e.printStackTrace();
         }
-
-//        PrintWriter writer = resp.getWriter();
-//        String s = printFile("likedTemplate.html");
-//        LikedDAO likedDAO = new LikedDAO();
-//        List<User> likedUsers = likedDAO.getUsers();
-//        for (User user : likedUsers) {
-//        writer.format(Locale.UK, s, user.getName(), user.getId(), user.getUrl(), user.getId());
-//        }
     }
 
     @Override
@@ -61,36 +53,5 @@ public class LikedServlet extends HttpServlet {
             getServletContext().setAttribute("userId", userId);
             resp.sendRedirect("/messages/" + userId);
         }
-    }
-
-    private long randomDay(){
-        Random random = new Random();
-        int finishDay = (int) LocalDate.now().toEpochDay();
-        int startDay = finishDay - 365;
-        return startDay + random.nextInt(finishDay - startDay);
-//        LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/YYYY");
-//        System.out.println(formatter.format(randomDate));
-//        System.out.println((LocalDate.now().toEpochDay() - randomDay) + " days ago");
-    }
-
-    private String printFile(String fileName){
-        StringBuilder sb = new StringBuilder();
-        String userDir = System.getProperty("user.dir");
-        String sep = System.getProperty("file.separator");
-        String filepath = userDir + sep + "\\src\\main\\java\\templates" + sep + fileName;
-        try(FileReader reader = new FileReader(filepath);
-            BufferedReader buffReader = new BufferedReader(reader))
-        {
-            String text = "";
-            while((text = buffReader.readLine()) != null){
-                sb.append(text);
-            }
-        }
-        catch ( IOException e )
-        {
-            e.printStackTrace();
-        }
-        return sb.toString();
     }
 }

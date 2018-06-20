@@ -11,19 +11,21 @@ import model.User;
 import model.UserList;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.*;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UsersServlet extends HttpServlet {
     private final Set<User> likedSet;
     private UserList userList = new UserList();
+    private List<User> currentUserList = new ArrayList<>();
     private int index = 0;
 
     public UsersServlet(Set<User> likedSet) {
@@ -40,15 +42,33 @@ public class UsersServlet extends HttpServlet {
         cfg.setLogTemplateExceptions(false);
         cfg.setWrapUncheckedExceptions(true);
         Map<String, Object> model = new HashMap<>();
-        model.put("user", "Andrew");
+        Cookie[] cookies = req.getCookies();
+        String login = "";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("login")) {
+                    login = cookie.getValue();
+                }
+            }
+        }
 
-        model.put("name", userList.get().get(index).getName());
-        //model.put("name", userList.get().get(index).getName());
-        model.put("url", "/images/src/main/java/resources/static/images/" + (index + 1) + ".jpg");
+        for (int i = 0; i < userList.get().size(); i++) {
+            String name = userList.get().get(i).getName();
+            User user = userList.get().get(i);
+            if (!name.equalsIgnoreCase(login)){
+               currentUserList.add(user);
+            }
+        }
+
+        model.put("name", currentUserList.get(index).getName());
+        model.put("url", currentUserList.get(index).getUrl());
         model.put("id", userList.get().get(index).getId());
 
         Template template = cfg.getTemplate("like-page.html");
         Writer out = resp.getWriter();
+
+
+
 
         try {
             template.process(model, out);
@@ -78,7 +98,7 @@ public class UsersServlet extends HttpServlet {
             doGet(req, resp);
     }
     private void indexRoll(){
-        if (index < userList.get().size() - 1) {
+        if (index < currentUserList.size() - 1) {
             index++;
         } else index = 0;
     }

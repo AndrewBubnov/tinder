@@ -20,6 +20,7 @@ public class ServerApp {
                            addServlet(new ServletHolder(new MessagesServlet()) ,"/messages/*");
                            addServlet(new ServletHolder(new StaticServlet()) ,"/assets/*");
                            addServlet(new ServletHolder(new ImageServlet()) ,"/images/*");
+                           addServlet(new ServletHolder(new LoginServlet()) ,"/login");
 
                        }}
             );
