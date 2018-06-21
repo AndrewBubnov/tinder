@@ -27,7 +27,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-        //cfg.setDirectoryForTemplateLoading(new File("./src/main/java/templates"));
         cfg.setDirectoryForTemplateLoading(new File("./src/main/java/resources/static/html/"));
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -65,11 +64,11 @@ public class LoginServlet extends HttpServlet {
                     map(String::valueOf).
                     collect(Collectors.toList());
             if (!loginList.contains(login) || password == null || !password.equals("111")){
-                 resp.sendRedirect("/login");
-             }
+                 resp.sendRedirect("/login"); 
+            }
 
             Cookie cookie = new Cookie("login", login);
-            System.out.println("login = " + login);
+            cookie.setMaxAge(1800);
             resp.addCookie(cookie);
             resp.sendRedirect("/users");
         }
