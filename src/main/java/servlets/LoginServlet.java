@@ -48,15 +48,12 @@ public class LoginServlet extends HttpServlet {
 
         String password = req.getParameter("password");
         String eMail = req.getParameter("email");
-
         if (eMail != null){
-
             if (Character.isUpperCase(eMail.charAt(0))){
                 resp.sendRedirect("/login");
             }
             String[] arr = eMail.split("@");
             String login = arr[0];
-
             UserList userList = new UserList();
             List<String> loginList = userList.get().stream().
                     map(User::getName).
@@ -66,7 +63,6 @@ public class LoginServlet extends HttpServlet {
             if (!loginList.contains(login) || password == null || !password.equals("111")){
                  resp.sendRedirect("/login"); 
             }
-
             Cookie cookie = new Cookie("login", login);
             cookie.setMaxAge(1800);
             resp.addCookie(cookie);

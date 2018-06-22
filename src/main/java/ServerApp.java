@@ -21,7 +21,7 @@ public class ServerApp {
                            addServlet(new ServletHolder(new StaticServlet()) ,"/assets/*");
                            addServlet(new ServletHolder(new ImageServlet()) ,"/images/*");
                            addServlet(new ServletHolder(new LoginServlet()) ,"/login");
-                           addFilter(LogFilter.class, "/*", null);
+                           //addFilter(LogFilter.class, "/*", null);
                        }}
             );
             start();

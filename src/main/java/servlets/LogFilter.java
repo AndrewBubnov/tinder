@@ -15,31 +15,28 @@ public class LogFilter implements Filter{
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest)request;
+        HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-//        if (req.getServletPath().equals("/login")) chain.doFilter(request, response);
-        Cookie[] cookieArray = req.getCookies();
-        if (cookieArray != null) {
-            for (Cookie cookie : cookieArray) {
-                if (cookie.getName().equals("login")) {
-                    chain.doFilter(request, response);
+        if (req.getRequestURI().equals("/login")) {
+            chain.doFilter(request, response);
+        } else {
+            boolean loginPresent = false;
+            Cookie[] cookieArray = req.getCookies();
+            if (cookieArray != null) {
+                for (Cookie cookie : cookieArray) {
+                    if (cookie.getName().equals("login")) {
+                        loginPresent = true;
+                        break;
+                    }
                 }
             }
-        }
-        RequestDispatcher rd = req.getRequestDispatcher("/login");
-        rd.include(request, response);
-//        HttpServletRequest req = (HttpServletRequest) request;
-//        HttpServletResponse resp = (HttpServletResponse) response;
 
-//        HttpSession session = req.getSession(false);
-//
-//        if (session == null) {   //checking whether the session exists
-//            RequestDispatcher rd = req.getRequestDispatcher("/login");
-//            rd.include(req, resp);
-//        } else {
-//
-//            chain.doFilter(req, resp);
-//        }
+            if (loginPresent) {
+                chain.doFilter(request, response);
+            } else {
+                resp.sendRedirect("/login");
+            }
+        }
     }
 
     @Override

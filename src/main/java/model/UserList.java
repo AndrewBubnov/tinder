@@ -22,6 +22,7 @@ public List<User> get(){
         add(new User("Kristina", "/images/src/main/java/resources/static/images/5.jpg"));
         add(new User("Sandy", "/images/src/main/java/resources/static/images/6.jpg"));
         add(new User("Mia", "/images/src/main/java/resources/static/images/7.jpg"));
+        add(new User("me", "/images/src/main/java/resources/static/images/8.jpg"));
     }};
  }
 }

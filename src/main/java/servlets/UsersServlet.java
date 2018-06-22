@@ -27,7 +27,6 @@ public class UsersServlet extends HttpServlet {
     private UserList userList = new UserList();
     private List<User> currentUserList = new ArrayList<>();
     private int index = 0;
-
     public UsersServlet(Set<User> likedSet) {
         this.likedSet = likedSet;
     }
@@ -35,7 +34,6 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-        //cfg.setDirectoryForTemplateLoading(new File("./src/main/java/templates"));
         cfg.setDirectoryForTemplateLoading(new File("./src/main/java/resources/static/html/"));
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -51,25 +49,21 @@ public class UsersServlet extends HttpServlet {
                 }
             }
         }
-
-        for (int i = 0; i < userList.get().size(); i++) {
-            String name = userList.get().get(i).getName();
-            User user = userList.get().get(i);
-            if (!name.equalsIgnoreCase(login)){
-               currentUserList.add(user);
+        if (currentUserList.size() < userList.get().size() - 1) {
+            for (int i = 0; i < userList.get().size(); i++) {
+                String name = userList.get().get(i).getName();
+                User user = userList.get().get(i);
+                if (!name.equalsIgnoreCase(login)) {
+                    currentUserList.add(user);
+                }
             }
         }
-
         model.put("name", currentUserList.get(index).getName());
         model.put("url", currentUserList.get(index).getUrl());
         model.put("id", userList.get().get(index).getId());
 
         Template template = cfg.getTemplate("like-page.html");
         Writer out = resp.getWriter();
-
-
-
-
         try {
             template.process(model, out);
         } catch (TemplateException e) {
@@ -81,7 +75,9 @@ public class UsersServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
             if (req.getParameter("answer") != null && req.getParameter("answer").equals("Next")) {
-                indexRoll();
+                if (index < currentUserList.size() - 1) {
+                    index++;
+                } else resp.sendRedirect("/liked");
             }
 
            if (req.getParameter("answer") != null && req.getParameter("answer").equals("Like")) {
@@ -92,14 +88,12 @@ public class UsersServlet extends HttpServlet {
 //                   likedDAO.add(likedUser);
 //               }
                likedSet.add(likedUser);
-               indexRoll();
+               if (index < currentUserList.size() - 1) {
+                   index++;
+               } else resp.sendRedirect("/liked");
+
            }
 
             doGet(req, resp);
-    }
-    private void indexRoll(){
-        if (index < currentUserList.size() - 1) {
-            index++;
-        } else index = 0;
     }
 }
