@@ -47,11 +47,8 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String password = req.getParameter("password");
-        String eMail = req.getParameter("email");
+        String eMail = req.getParameter("email").toLowerCase();
         if (eMail != null){
-            if (Character.isUpperCase(eMail.charAt(0))){
-                resp.sendRedirect("/login");
-            }
             String[] arr = eMail.split("@");
             String login = arr[0];
             UserList userList = new UserList();

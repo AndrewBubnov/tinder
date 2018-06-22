@@ -49,6 +49,7 @@ public class UsersServlet extends HttpServlet {
                 }
             }
         }
+
         if (currentUserList.size() < userList.get().size() - 1) {
             for (int i = 0; i < userList.get().size(); i++) {
                 String name = userList.get().get(i).getName();
@@ -74,26 +75,20 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-            if (req.getParameter("answer") != null && req.getParameter("answer").equals("Next")) {
-                if (index < currentUserList.size() - 1) {
-                    index++;
-                } else resp.sendRedirect("/liked");
-            }
-
            if (req.getParameter("answer") != null && req.getParameter("answer").equals("Like")) {
 
                LikedDAO likedDAO = new LikedDAO();
-               User likedUser = userList.get().get(index);
+               User likedUser = currentUserList.get(index);
 //               if (!likedDAO.getUsers().contains(likedUser)) {
 //                   likedDAO.add(likedUser);
 //               }
                likedSet.add(likedUser);
-               if (index < currentUserList.size() - 1) {
-                   index++;
-               } else resp.sendRedirect("/liked");
+
 
            }
-
+        if (index < currentUserList.size() - 1) {
+            index++;
+        } else resp.sendRedirect("/liked");
             doGet(req, resp);
     }
 }
