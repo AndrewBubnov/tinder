@@ -1,6 +1,7 @@
 package servlets;
 
 import dao.LikedDAO;
+import dao.UserDAO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -24,6 +25,12 @@ import java.util.stream.Stream;
 
 
 public class LoginServlet extends HttpServlet {
+    private List<User> allUsersList;
+
+    public LoginServlet(List<User> allUsersList) {
+        this.allUsersList = allUsersList;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
@@ -51,16 +58,21 @@ public class LoginServlet extends HttpServlet {
         if (eMail != null){
             String[] arr = eMail.split("@");
             String login = arr[0];
-            UserList userList = new UserList();
-            List<String> loginList = userList.get().stream().
+
+            List<String> loginList = allUsersList.stream().
                     map(User::getName).
                     map(s -> Character.toLowerCase(s.charAt(0)) + s.substring(1)).
                     map(String::valueOf).
                     collect(Collectors.toList());
             if (!loginList.contains(login) || password == null || !password.equals("111")){
-                 resp.sendRedirect("/login"); 
+                 resp.sendRedirect("/login");
+                 return;
             }
-            Cookie cookie = new Cookie("login", login);
+            UserDAO userDAO = new UserDAO();
+            userDAO.updateDate(login);
+
+            //Cookie cookie = new Cookie("login", login);
+            Cookie cookie = new Cookie("id", userDAO.getIdByLogin(login) + "");
             cookie.setMaxAge(1800);
             resp.addCookie(cookie);
             resp.sendRedirect("/users");

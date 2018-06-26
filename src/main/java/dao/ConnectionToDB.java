@@ -10,7 +10,7 @@ public class ConnectionToDB {
     private static final String USERNAME = "fs5_user";
     private static final String USER_PASS = "bArceloNa";
 
-    protected Connection getConnection(){
+    public Connection getConnection(){
         Connection connection = null;
         try{
             connection = DriverManager.getConnection(DB_URL,USERNAME, USER_PASS);

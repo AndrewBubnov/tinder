@@ -2,6 +2,7 @@ package servlets;
 
 
 import dao.LikedDAO;
+import dao.UserDAO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -23,11 +24,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UsersServlet extends HttpServlet {
+    private List<User> allUsersList;
     private final Set<User> likedSet;
-    private UserList userList = new UserList();
+    //private UserList userList = new UserList();
     private List<User> currentUserList = new ArrayList<>();
     private int index = 0;
-    public UsersServlet(Set<User> likedSet) {
+    public UsersServlet(List<User> allUsersList, Set<User> likedSet) {
+        this.allUsersList = allUsersList;
         this.likedSet = likedSet;
     }
 
@@ -41,19 +44,23 @@ public class UsersServlet extends HttpServlet {
         cfg.setWrapUncheckedExceptions(true);
         Map<String, Object> model = new HashMap<>();
         Cookie[] cookies = req.getCookies();
-        String login = "";
+
+        int id = 0;
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("login")) {
-                    login = cookie.getValue();
+                if (cookie.getName().equals("id")) {
+                    id = Integer.parseInt(cookie.getValue());
                 }
             }
         }
+        UserDAO userDAO = new UserDAO();
+        String login = userDAO.getLoginById(id);
 
-        if (currentUserList.size() < userList.get().size() - 1) {
-            for (int i = 0; i < userList.get().size(); i++) {
-                String name = userList.get().get(i).getName();
-                User user = userList.get().get(i);
+        if (currentUserList.size() < allUsersList.size() - 1) {
+            for (int i = 0; i < allUsersList.size(); i++) {
+                String name = allUsersList.get(i).getName();
+                User user = allUsersList.get(i);
+
                 if (!name.equalsIgnoreCase(login)) {
                     currentUserList.add(user);
                 }
@@ -61,7 +68,7 @@ public class UsersServlet extends HttpServlet {
         }
         model.put("name", currentUserList.get(index).getName());
         model.put("url", currentUserList.get(index).getUrl());
-        model.put("id", userList.get().get(index).getId());
+        model.put("id", allUsersList.get(index).getId());
 
         Template template = cfg.getTemplate("like-page.html");
         Writer out = resp.getWriter();
@@ -79,6 +86,7 @@ public class UsersServlet extends HttpServlet {
 
                LikedDAO likedDAO = new LikedDAO();
                User likedUser = currentUserList.get(index);
+
 //               if (!likedDAO.getUsers().contains(likedUser)) {
 //                   likedDAO.add(likedUser);
 //               }

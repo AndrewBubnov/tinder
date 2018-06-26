@@ -39,10 +39,15 @@
                                         ${i.name}
                                     </td>
                                     <td class="align-middle">
-                                        model
+                                        <form action = "liked" method="post">
+                                            <input type="submit" name="chat" class="btn btn-outline-success btn-block" value="Chat">
+                                            <input type="hidden" name="userId" value="${i.id}">
+                                            <input type="hidden" name="name" value="${i.name}">
+                                        </form>
                                     </td>
                                     <td  class="align-middle">
-                                        last loged in: ${i.lastLogined}<br><small class="text-muted">${i.daysSinseLogin} days ago</small>
+                                        last loged in: ${i.lastLogined}<br>
+                                        <small class="text-muted">${i.daysAfterLogin} days ago</small>
                                     </td>
                                 </tr>
                             </#list>

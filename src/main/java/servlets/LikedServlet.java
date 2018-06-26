@@ -29,14 +29,15 @@ public class LikedServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
         cfg.setDirectoryForTemplateLoading(new File("./src/main/java/resources/static/html/"));
-        //cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
         cfg.setWrapUncheckedExceptions(true);
+        resp.setContentType("text/html; charset=utf-8");
         Map<String, Object> model = new HashMap<>();
         Template template = cfg.getTemplate("people-list.html");
         Writer out = resp.getWriter();
-
+        LikedDAO likedDAO = new LikedDAO();
+        List<User> likedList = likedDAO.getUsers();
         model.put("liked", likedSet);
 
         try {
@@ -49,7 +50,10 @@ public class LikedServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("chat").equals("Chat")){
+            UserList userList = new UserList();
             String userId = req.getParameter("userId");
+            String name = req.getParameter("name");
+            //userId = userId.charAt(0) + userId.substring(2);
             getServletContext().setAttribute("userId", userId);
             resp.sendRedirect("/messages/" + userId);
         }

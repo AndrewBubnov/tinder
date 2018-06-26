@@ -17,7 +17,8 @@ public class LogFilter implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        if (req.getRequestURI().equals("/login")) {
+        if (req.getRequestURI().equals("/login") || req.getRequestURI().equals("/assets/") || req.getRequestURI().equals("/images/*")) {
+            System.out.println(req.getRequestURI());
             chain.doFilter(request, response);
         } else {
             boolean loginPresent = false;

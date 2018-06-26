@@ -36,7 +36,6 @@ public class LikedDAO {
                 user.setName(rSet.getString("name"));
                 user.setUrl(rSet.getString("url"));
                 userList.add(user);
-
             }
             return userList;
         }
