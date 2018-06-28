@@ -17,15 +17,15 @@ public class LogFilter implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        if (req.getRequestURI().equals("/login") || req.getRequestURI().equals("/assets/") || req.getRequestURI().equals("/images/*")) {
-            System.out.println(req.getRequestURI());
+        if (req.getRequestURI().equals("/login") || req.getRequestURI().startsWith("/assets/") || req.getRequestURI().startsWith("/images/*")) {
+
             chain.doFilter(request, response);
         } else {
             boolean loginPresent = false;
             Cookie[] cookieArray = req.getCookies();
             if (cookieArray != null) {
                 for (Cookie cookie : cookieArray) {
-                    if (cookie.getName().equals("login")) {
+                    if (cookie.getName().equals("id")) {
                         loginPresent = true;
                         break;
                     }

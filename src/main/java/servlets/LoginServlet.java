@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
         if (eMail != null){
             String[] arr = eMail.split("@");
             String login = arr[0];
-
+            if (login.equals("me")) login = "andrew";
             List<String> loginList = allUsersList.stream().
                     map(User::getName).
                     map(s -> Character.toLowerCase(s.charAt(0)) + s.substring(1)).
@@ -71,7 +71,6 @@ public class LoginServlet extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             userDAO.updateDate(login);
 
-            //Cookie cookie = new Cookie("login", login);
             Cookie cookie = new Cookie("id", userDAO.getIdByLogin(login) + "");
             cookie.setMaxAge(1800);
             resp.addCookie(cookie);

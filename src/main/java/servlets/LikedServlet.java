@@ -20,9 +20,11 @@ import java.util.*;
 
 public class LikedServlet extends HttpServlet {
     private final Set<User> likedSet;
+    private List<User> currentUserList;
 
-    public LikedServlet(Set<User> likedSet) {
+    public LikedServlet(Set<User> likedSet, List<User> currentUserList) {
         this.likedSet = likedSet;
+        this.currentUserList = currentUserList;
     }
 
     @Override
@@ -49,13 +51,18 @@ public class LikedServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("chat").equals("Chat")){
-            UserList userList = new UserList();
+        if (req.getParameter("chat") != null && req.getParameter("chat").equals("Chat")){
             String userId = req.getParameter("userId");
             String name = req.getParameter("name");
-            //userId = userId.charAt(0) + userId.substring(2);
+
             getServletContext().setAttribute("userId", userId);
             resp.sendRedirect("/messages/" + userId);
+        }
+        if (req.getParameter("answer") != null && req.getParameter("answer").equals("Log out")) {
+            likedSet.clear();
+            currentUserList.clear();
+            resp.sendRedirect("/logout");
+            return;
         }
     }
 }
