@@ -15,19 +15,19 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="/assets/src/main/java/resources/static/css/style.css">
     <style>
-    input{
-        border: none;
-        background-color: #ffffff;
-        color: darkviolet;
-        width: 100%;
-        cursor: pointer;
+        input{
+            border: none;
+            background-color: #ffffff;
+            color: darkviolet;
+            width: 100%;
+            cursor: pointer;
         }
         .unreadMessageButton{
-        width: 100%;
-        border: none;
-        background-color: #ffffff;
-        color: darkviolet;
-        cursor: pointer;
+            width: 100%;
+            border: none;
+            background-color: #ffffff;
+            color: darkviolet;
+            cursor: pointer;
         }
         .unreadMessageButton:hover{
             color: green;
@@ -36,19 +36,19 @@
         .unreadMessageButton:hover .fa-envelope{
             animation: zoomInLeft .8s forwards;
         }
-    @keyframes zoomInLeft {
-        from {
-            opacity: 0;
-            transform: scale3d(.1, .1, .1) translate3d(-1000px, 0, 0);
-            animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
-        }
+        @keyframes zoomInLeft {
+            from {
+                opacity: 0;
+                transform: scale3d(.1, .1, .1) translate3d(-1000px, 0, 0);
+                animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+            }
 
-        60% {
-            opacity: 1;
-            transform: scale3d(.475, .475, .475) translate3d(10px, 0, 0);
-            animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+            60% {
+                opacity: 1;
+                transform: scale3d(.475, .475, .475) translate3d(10px, 0, 0);
+                animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+            }
         }
-    }
         .unreadMessageButton:focus{
             outline: white;
         }
@@ -59,19 +59,19 @@
             cursor: pointer;
         }
         .btn-outline-danger:hover .fa {
-           transform: rotate(90deg);
+            transform: rotate(90deg);
         }
 
         .btn-outline-danger .fa {
-           transition: transform .5s ease-in-out;
+            transition: transform .5s ease-in-out;
         }
         .btn-outline-success .fa{
-           animation: pulse 1.5s ease infinite;
+            animation: pulse 1.5s ease infinite;
         }
 
         @keyframes pulse {
-           0%, 50%, 100% {transform: scale(1)}
-           25%{transform: scale(1.1)}
+            0%, 50%, 100% {transform: scale(1)}
+            25%{transform: scale(1.1)}
         }
         .logout{
             color: lightgray;
@@ -102,7 +102,7 @@
         </div>
         <div class="card-body">
 
-            <div class="col-6 col-lg-4">
+            <div class="col-6 col-lg-3">
                 <form action = "/users" method = "post">
                     <button name = "answer" value = "Log out" class="btn btn-outline-danger btn-block logout"><span class = "logoutMessage">Log out</span></button>
                 </form>
@@ -111,8 +111,10 @@
 
             <div class="row">
                 <div class="col-12 col-lg-12 col-md-12 text-center">
-                    <img src=${url} class="mx-auto rounded-circle img-fluid">
-                    <!--<img src="${url}" alt="" class="mx-auto rounded-circle img-fluid">-->
+                    <img width="250px" src=${url} class="mx-auto rounded-circle img-fluid">
+                    <div style="font-size: 1em; text-align: center;">
+                    ${details}
+                    </div>
                     <h3 class="mb-0 text-truncated">${name}</h3>
                     <br>
                 </div>
@@ -123,7 +125,6 @@
                 </div>
                 <div class="col-12 col-lg-6">
                     <form action = "/users" method = "post" id = "likeForm">
-                    <!--<button name = "answer" value = "Like" id = "one" class="btn btn-outline-success btn-block"><span class="fa fa-heart"></span> Like</button>-->
                     <div id = "one" class="btn btn-outline-success btn-block"><span class="fa fa-heart"></span> Like</div>
                     <input type = "hidden" name = "answer" value = "Like">
                     <input type = "hidden" id = "two" name = "toChat">
@@ -134,15 +135,16 @@
 
                 <br><br>
                 <div style="margin: auto;">
-            <#list message as i>
-                <div class="col-12 col-lg-12">
-                    <form action = "/users" method = "post">
-                        <input type="hidden" value="${i.senderId}" name="message">
-                        <button value = "Submit" class="unreadMessageButton"><span class="fa fa-envelope"></span> Unread message from ${i.sender} &nbsp;&nbsp;<span class = "sender-img"><img src = ${i.url}></span></button>
-                    </form>
-                </div>
-            </#list>
+                    <#list message as i>
+                    <div class="col-12 col-lg-12">
+                        <form action = "/users" method = "post">
+                            <input type="hidden" value="${i.senderId}" name="message">
+                            <button value = "Submit" class="unreadMessageButton"><span class="fa fa-envelope"></span> Unread message from ${i.sender} &nbsp;&nbsp;<span class = "sender-img"><img src = ${i.url}></span></button>
+                        </form>
+                    </div>
+                </#list>
             </div>
+
 
                 <!--/col-->
             </div>
@@ -160,15 +162,16 @@
 
     var one = document.querySelector("#one");
     var image = document.querySelector("img");
-    image.addEventListener("click", function(){
-        document.querySelector("#two").value = "Detailed";
-        formSubmit();
-    });
+
 
     window.addEventListener("keydown", function(e){
         document.querySelector("#two").value = e.key;
         }, true);
     one.addEventListener("click", formSubmit);
+    image.addEventListener("click", function(){
+        document.querySelector("#two").value = "Detailed";
+        formSubmit();
+    });
 </script>
 </body>
 </html>

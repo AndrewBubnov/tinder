@@ -1,13 +1,17 @@
 package dao;
 
 
+import model.Message;
 import model.User;
 import model.UserList;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,16 +28,25 @@ public class UserDAO {
         return user;
     }
 
+    public List<User> getCurrentUsers(List<User> allUsersList, int id){
+        List<User> currentUserList = new ArrayList<>();
+        for (User user : allUsersList) {
+            if (user.getId() != id){
+                currentUserList.add(user);
+            }
+        }
+        return currentUserList;
+    }
+
     public void updateDate(String login){
         String sql = "UPDATE users_bubnov SET last_logined=? WHERE name='" + login + "'";
         ConnectionToDB connectionToDB = new ConnectionToDB();
         try (Connection connection = connectionToDB.getConnection();
-             PreparedStatement statement  = connection.prepareStatement(sql)){
-//            Timestamp t = new Timestamp(System.currentTimeMillis());
-//            String s = new SimpleDateFormat("MMMM dd, HH:mm a", Locale.US).format(t);
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-            LocalDate date = LocalDate.parse(LocalDate.now().toString(), formatter);
-            statement.setString(1, date.toString());
+            PreparedStatement statement  = connection.prepareStatement(sql)){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            LocalDateTime nowDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+            String date = nowDateTime.format(formatter).toString();
+            statement.setString(1, date);
             statement.executeUpdate();
         }
         catch ( SQLException e )
@@ -89,4 +102,6 @@ public class UserDAO {
         }
         return null;
     }
+
+
 }

@@ -2,12 +2,15 @@ package servlets;
 
 
 import dao.LikedDAO;
+import dao.MessageDAO;
 import dao.UserDAO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
+import model.Message;
+import model.UncheckedMessage;
 import model.User;
 import model.UserList;
 
@@ -27,14 +30,16 @@ public class UsersServlet extends HttpServlet {
     private List<User> allUsersList;
     private final Set<User> likedSet;
     //private UserList userList = new UserList();
-    private List<User> currentUserList = new ArrayList<>();
+    List<User> currentUserList;
     private int index = 0;
+    private boolean detailed;
 
     public UsersServlet(List<User> allUsersList, Set<User> likedSet, List<User> currentUserList) {
         this.allUsersList = allUsersList;
         this.likedSet = likedSet;
         this.currentUserList = currentUserList;
     }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,6 +49,10 @@ public class UsersServlet extends HttpServlet {
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
         cfg.setWrapUncheckedExceptions(true);
+        Template template = null;
+        if (detailed) {
+            template = cfg.getTemplate("like-page-details.html");
+        } else template = cfg.getTemplate("like-page.html");
         Map<String, Object> model = new HashMap<>();
         Cookie[] cookies = req.getCookies();
 
@@ -58,25 +67,19 @@ public class UsersServlet extends HttpServlet {
         UserDAO userDAO = new UserDAO();
         String login = userDAO.getLoginById(id);
 
-//        currentUserList.clear();
-
-
-        if (currentUserList.size() < allUsersList.size() - 1) {
-            for (int i = 0; i < allUsersList.size(); i++) {
-                String name = allUsersList.get(i).getName();
-                User user = allUsersList.get(i);
-
-                if (!name.equalsIgnoreCase(login)) {
-                    currentUserList.add(user);
-                }
-            }
-        }
+        currentUserList = userDAO.getCurrentUsers(allUsersList,id);
         model.put("name", currentUserList.get(index).getName());
         model.put("url", currentUserList.get(index).getUrl());
         model.put("id", allUsersList.get(index).getId());
         model.put("login", login);
+        if (detailed) {
+            model.put("details", currentUserList.get(index).getDetails());
+        }
+        MessageDAO messageDAO = new MessageDAO();
+        List<UncheckedMessage> unchekedMessages = messageDAO.getUncheckedMessages(id);
 
-        Template template = cfg.getTemplate("like-page.html");
+        model.put("message", unchekedMessages);
+
         Writer out = resp.getWriter();
         try {
             template.process(model, out);
@@ -88,6 +91,19 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        if (("Detailed").equals(req.getParameter("toChat"))){
+            detailed = !detailed;
+            doGet(req, resp);
+            return;
+        }
+        if (req.getParameter("message") != null) {
+            String userId = req.getParameter("message");
+            getServletContext().setAttribute("userId", userId);
+            resp.sendRedirect("/messages/" + userId);
+            return;
+        }
+
+
         if (req.getParameter("answer") != null && req.getParameter("answer").equals("Log out")) {
             likedSet.clear();
             currentUserList.clear();
@@ -98,6 +114,16 @@ public class UsersServlet extends HttpServlet {
 
 
         if (req.getParameter("answer") != null && req.getParameter("answer").equals("Like")) {
+
+            if (req.getParameter("toChat").equals("Control")){
+
+                UserDAO userDAO = new UserDAO();
+                int id = userDAO.getIdByLogin(req.getParameter("friendName"));
+                getServletContext().setAttribute("userId", id + "");
+                resp.sendRedirect("/messages/" + id);
+                return;
+            }
+
                LikedDAO likedDAO = new LikedDAO();
                User likedUser = currentUserList.get(index);
 
@@ -110,7 +136,6 @@ public class UsersServlet extends HttpServlet {
         if (index < currentUserList.size() - 1) {
             index++;
         } else {
-            //currentUserList.clear();
             index = 0;
             resp.sendRedirect("/liked");
         }

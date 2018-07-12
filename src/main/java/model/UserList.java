@@ -7,37 +7,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class UserList {
-public List<User> get(){
-//    return new ArrayList<User>(){{
-//        add(new User("Anna", "http://img.izismile.com/img/img6/20130920/640/pretty_girls_that_make_the_world_a_little_more_beautiful_640_06.jpg"));
-//        add(new User("Victoria", "http://img.izismile.com/img/img6/20130920/640/pretty_girls_that_make_the_world_a_little_more_beautiful_640_14.jpg"));
-//        add(new User("Johanna", "http://img.izismile.com/img/img6/20130920/640/pretty_girls_that_make_the_world_a_little_more_beautiful_640_15.jpg"));
-//        add(new User("Mary", "http://img.izismile.com/img/img6/20130920/640/pretty_girls_that_make_the_world_a_little_more_beautiful_640_18.jpg"));
-//        add(new User("Kristina", "http://img.izismile.com/img/img11/20180605/640/beautiful_girls_make_the_world_go_around_640_high_28.jpg"));
-//        add(new User("Sandy", "http://img.izismile.com/img/img11/20180605/640/beautiful_girls_make_the_world_go_around_640_high_34.jpg"));
-//        add(new User("Mia", "http://img.izismile.com/img/img11/20180605/640/beautiful_girls_make_the_world_go_around_640_high_03.jpg"));
-//    }};
-//    return new ArrayList<User>(){{
-//        add(new User("Anna", "/images/src/main/java/resources/static/images/1.jpg"));
-//        add(new User("Victoria", "/images/src/main/java/resources/static/images/2.jpg"));
-//        add(new User("Johanna", "/images/src/main/java/resources/static/images/3.jpg"));
-//        add(new User("Mary", "/images/src/main/java/resources/static/images/4.jpg"));
-//        add(new User("Kristina", "/images/src/main/java/resources/static/images/5.jpg"));
-//        add(new User("Sandy", "/images/src/main/java/resources/static/images/6.jpg"));
-//        add(new User("Mia", "/images/src/main/java/resources/static/images/7.jpg"));
-//        add(new User("me", "/images/src/main/java/resources/static/images/8.jpg"));
-//    }};
 
+ public List<User> get(){
     List<User> userList = new ArrayList<>();
     String sql = "SELECT * FROM users_bubnov";
     ConnectionToDB connectionToDB = new ConnectionToDB();
@@ -45,18 +25,50 @@ public List<User> get(){
          PreparedStatement statement  = connection.prepareStatement(sql);
          ResultSet rSet = statement.executeQuery()){
         while ( rSet.next() ){
-            User user = new User();
-            user.setId(rSet.getInt("id"));
-            user.setName(rSet.getString("name"));
-            user.setUrl(rSet.getString("url"));
             String lastLogined = rSet.getString("last_logined");
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-            LocalDate dateOfLastlogin = LocalDate.parse(lastLogined, formatter);
-            Instant instant = dateOfLastlogin.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            LocalDateTime dateOfLastlogin = LocalDateTime.parse(lastLogined, formatter);
+            LocalDateTime nowDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+            LocalDateTime lastLoginedDateTime = LocalDateTime.from(dateOfLastlogin);
+
+            int minutes = (int)lastLoginedDateTime.until( nowDateTime, ChronoUnit.MINUTES);
+            int years = minutes / 525600;
+            minutes %= 525600;
+            int months = minutes / 43800;
+            minutes %= 43800;
+            int days = minutes / 1440;
+            minutes %= 1440;
+            int hours = minutes / 60;
+            minutes %= 60;
+            String timeAfterlogin = "";
+            if (years> 0) {
+                timeAfterlogin += years + " years ";
+                days = 0;
+                hours = 0;
+                minutes = 0;
+            }
+            if (months> 0) {
+                timeAfterlogin += months + " months ";
+                hours = 0;
+                minutes = 0;
+            }
+            if (days> 0) {
+                timeAfterlogin += days + " days ";
+                minutes = 0;
+            }
+            if (hours> 0) timeAfterlogin += hours + " hours ";
+            if (minutes> 0) timeAfterlogin += minutes + " minutes";
+
+            Instant instant = dateOfLastlogin.atZone(ZoneId.systemDefault()).toInstant();
             Date res = Date.from(instant);
-            user.setLastLogined(new SimpleDateFormat("MMMM dd, YYYY", Locale.US).format(res));
-            int days = (int)(LocalDate.now().toEpochDay() - dateOfLastlogin.toEpochDay());
-            user.setDaysAfterLogin(days);
+            String setingLastLogined = new SimpleDateFormat("MMMM dd, YYYY", Locale.US).format(res);
+            User user = new User(
+            rSet.getString("name"),
+            rSet.getString("url"),
+            rSet.getInt("id"),
+            setingLastLogined,
+            timeAfterlogin,
+            rSet.getString("details"));
             userList.add(user);
         }
         return userList;

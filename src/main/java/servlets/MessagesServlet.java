@@ -39,7 +39,7 @@ public class MessagesServlet extends HttpServlet {
         cfg.setLogTemplateExceptions(false);
         cfg.setWrapUncheckedExceptions(true);
         Map<String, Object> model = new HashMap<>();
-        Template template = cfg.getTemplate("chat.html");
+        Template template = cfg.getTemplate("chat.ftlh");
         int userId = Integer.parseInt((String)getServletContext().getAttribute("userId"));
 
         User user = new User();
@@ -75,8 +75,9 @@ public class MessagesServlet extends HttpServlet {
         model.put("login", login);
         model.put("loginUrl", userDAO.getUrlById(loginId));
 
-        List<Message> outcomingMessageList = messageDAO.getMessages(loginId, userDAO.getIdByLogin(name));
-        List<Message> incomingMessageList = messageDAO.getMessages(userDAO.getIdByLogin(name), loginId);
+        List<Message> outcomingMessageList = messageDAO.getMessages(loginId, userDAO.getIdByLogin(name), userId);
+        List<Message> incomingMessageList = messageDAO.getMessages(userDAO.getIdByLogin(name), loginId, userId);
+
         model.put("outList", outcomingMessageList);
         model.put("inList", incomingMessageList);
 
@@ -85,7 +86,6 @@ public class MessagesServlet extends HttpServlet {
         } catch (TemplateException e) {
             e.printStackTrace();
         }
-
 
     }
 

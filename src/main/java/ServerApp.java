@@ -14,7 +14,6 @@ import java.util.Set;
 
 public class ServerApp {
        public static void main(String[] args) throws Exception {
-           //Database base = new DataBaseHashMap();
            Set<User> likedSet = new HashSet<>();
            List<User> allUsersList = new UserList().get();
            List<User> currentUserList = new ArrayList<>();

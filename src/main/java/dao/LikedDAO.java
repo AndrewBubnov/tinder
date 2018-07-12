@@ -31,10 +31,10 @@ public class LikedDAO {
              PreparedStatement statement  = connection.prepareStatement(sql);
              ResultSet rSet = statement.executeQuery()){
             while ( rSet.next() ){
-                User user = new User();
-                user.setId(rSet.getInt("id"));
-                user.setName(rSet.getString("name"));
-                user.setUrl(rSet.getString("url"));
+                User user = new User(
+                rSet.getString("name"),
+                rSet.getString("url"),
+                rSet.getInt("id"));
                 userList.add(user);
             }
             return userList;

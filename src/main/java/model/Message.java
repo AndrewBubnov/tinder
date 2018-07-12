@@ -10,16 +10,17 @@ public class Message {
     private String message;
     private String time;
 
-    public String getSender() {
-        return sender;
+    public Message(String sender, int senderId, String acceptor, int acceptorId, String message, String time) {
+        this.sender = sender;
+        this.senderId = senderId;
+        this.acceptor = acceptor;
+        this.acceptorId = acceptorId;
+        this.message = message;
+        this.time = time;
     }
 
     public int getSenderId() {
         return senderId;
-    }
-
-    public String getAcceptor() {
-        return acceptor;
     }
 
     public int getAcceptorId() {
@@ -30,33 +31,18 @@ public class Message {
         return message;
     }
 
+    public String getSender() {
+        return sender;
+    }
+
+    public String getAcceptor() {
+        return acceptor;
+    }
+
     public String getTime() {
         return time;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
-    }
-
-    public void setAcceptor(String acceptor) {
-        this.acceptor = acceptor;
-    }
-
-    public void setAcceptorId(int acceptorId) {
-        this.acceptorId = acceptorId;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     public String toString(){
         return "From: " + sender + " to: " + acceptor + " message: \"" + message + "\" at " + time;

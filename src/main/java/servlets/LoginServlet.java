@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 public class LoginServlet extends HttpServlet {
     private List<User> allUsersList;
 
+
     public LoginServlet(List<User> allUsersList) {
         this.allUsersList = allUsersList;
     }
@@ -71,10 +72,14 @@ public class LoginServlet extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             userDAO.updateDate(login);
 
-            Cookie cookie = new Cookie("id", userDAO.getIdByLogin(login) + "");
+
+
+
+            Cookie cookie = new Cookie("id",userDAO.getIdByLogin(login) + "");
             cookie.setMaxAge(1800);
             resp.addCookie(cookie);
             resp.sendRedirect("/users");
+            return;
         }
         else resp.sendRedirect("/login");
     }

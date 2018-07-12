@@ -45,6 +45,7 @@
                 </div>
             </div>
             <div class="chat-content">
+
                 <#list outList as o>
                 <div class="col-md-12 chats pt-3 pl-2 pr-3 pb-3">
                     <ul class="p-0">
@@ -54,27 +55,36 @@
                                 <img src=${loginUrl} class="float-right">
                             </div>
                             <div class="receive-msg-desc float-right ml-2">
+                            <#if o.message != "">
                             <p class="bg-white m-0 pt-1 pb-1 pl-2 pr-2 rounded">
                                 ${o.message}
                             </p>
+                            </#if>
+                            <span class="receive-msg-time"><#if o.time != "">${login}, ${o.time}</#if></span>
 
-                            <span class="receive-msg-time">${login}, ${o.time}</span>
                             </div>
                         </li>
                     </#list>
+
+
+
                 <#list inList as i>
                         <li class="receive-msg float-left mb-2">
                             <div class="sender-img">
                                 <img src=${url} class="float-left">
                             </div>
                             <div class="receive-msg-desc float-left ml-2">
+                            <#if i.message != "">
                                 <p class="bg-white m-0 pt-1 pb-1 pl-2 pr-2 rounded">
                                     ${i.message}
                                 </p>
-                                <span class="receive-msg-time">${name}, ${i.time}</span>
+                            </#if>
+                                <span class="receive-msg-time"><#if i.time != "">${name}, ${i.time}</#if></span>
+
                             </div>
                         </li>
                  </#list>
+
 
                     </ul>
 
@@ -84,7 +94,7 @@
 
                         <div class="col-md-10 pl-0" style="margin: auto">
                             <form action = "messages" method="post">
-                                <input type="text" class="border-0" name = "message" placeholder=" Send message" />
+                                <input type="text" class="col-md-12 border-0" style = "background-color: aliceblue" name = "message" placeholder=" Send message" />
                             </form>
                         </div>
 
