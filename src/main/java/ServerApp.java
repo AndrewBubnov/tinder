@@ -17,7 +17,9 @@ public class ServerApp {
            Set<User> likedSet = new HashSet<>();
            List<User> allUsersList = new UserList().get();
            List<User> currentUserList = new ArrayList<>();
-        new Server(8081) {{
+           String port = null;
+           port = args.length > 0 ? args[0] : "8081";
+        new Server(Integer.parseInt(port)) {{
             setHandler(new ServletContextHandler() {{
                            addServlet(new ServletHolder(new UsersServlet(allUsersList, likedSet, currentUserList)) ,"/users");
                            addServlet(new ServletHolder(new LikedServlet(likedSet, currentUserList)) ,"/liked");

@@ -1,1 +1,1 @@
-web: java -jar target/tinder-1.0-SNAPSHOT-jar-with-dependencies.jar 8081
+web: java -jar target/tinder-1.0-SNAPSHOT-jar-with-dependencies.jar $PORT
